@@ -9,13 +9,13 @@
 
 void Model::Init()
 {
-	distribution = std::vector<double>(T);
+	distribution = std::vector<double>(number_of_patterns);
 
-	weightLogWeights = std::vector<double>(T);
+	weightLogWeights = std::vector<double>(number_of_patterns);
 
 	double sumOfWeights = 0;
 	double sumOfWeightLogWeights = 0;
-	for (int t = 0; t < T; t++)
+	for (int t = 0; t < number_of_patterns; t++)
 	{
 		weightLogWeights[t] = weights[t] * std::log(weights[t]);
 		sumOfWeights += weights[t];
@@ -24,7 +24,7 @@ void Model::Init()
 
 	const double startingEntropy = std::log(sumOfWeights) - sumOfWeightLogWeights / sumOfWeights;
 
-	stack = std::vector<std::pair<int, int>>{ static_cast<size_t>(output_size.width * output_size.height * T) };
+	stack = std::vector<std::pair<int, int>>{ static_cast<size_t>(output_size.width * output_size.height * number_of_patterns) };
 	stacksize = 0;
 
 	InitCellEntropies(startingEntropy, sumOfWeights, sumOfWeightLogWeights);
@@ -53,7 +53,7 @@ bool Model::Run(const int limit)
 			for (int i = 0; i < output_size.width * output_size.height; i++)
 			{
 				auto& cell = cellInfos[i];
-				for (int t = 0; t < T; t++)
+				for (int t = 0; t < number_of_patterns; t++)
 				{
 					if (cell.wave[t])
 					{
@@ -105,12 +105,12 @@ void Model::Observe(const int node)
 {
 	auto& cell = cellInfos[node];
 	std::vector<bool>& w = cell.wave;
-	for (int t = 0; t < T; t++)
+	for (int t = 0; t < number_of_patterns; t++)
 	{
 		distribution[t] = w[t] ? weights[t] : 0.0;
 	}
 	const int r = RandomWeight(distribution);
-	for (int t = 0; t < T; t++)
+	for (int t = 0; t < number_of_patterns; t++)
 	{
 		if (w[t] != (t == r))
 		{
@@ -157,7 +157,7 @@ bool Model::Propagate()
 			const int neighbor_index = x2 + y2 * output_size.width;
 			auto& cell = cellInfos[neighbor_index];
 
-			for (int l = 0; l < propagator[d][t1].size(); l++)
+			for (auto l = 0; l < propagator[d][t1].size(); l++)
 			{
 				const int t2 = propagator[d][t1][l];
 
@@ -193,7 +193,6 @@ void Model::Ban(int i, int t)
 
 	for (int d = 0; d < NumberOfNeighbors; d++)
 	{
-
 		cell.compatible[d][t] = 0;
 	}
 	stack[stacksize] = std::pair<int, int>(i, t);
@@ -230,10 +229,10 @@ void Model::Clear()
 	for (int i = 0; i < cellInfos.size(); ++i)
 	{
 		auto& cellInfo = cellInfos[i];
-		cellInfo.Reset(T);
+		cellInfo.Reset(number_of_patterns);
 
 		for (int d = 0; d < NumberOfNeighbors; d++) {
-			for (int t = 0; t < T; t++)
+			for (int t = 0; t < number_of_patterns; t++)
 			{
 				cellInfo.compatible[d][t] = propagator[opposite[d]][t].size();
 			}

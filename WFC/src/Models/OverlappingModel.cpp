@@ -112,14 +112,14 @@ OverlappingModel::OverlappingModel(
 	}
 
 	// remove the T maybe
-	T = static_cast<int>(weights.size());
+	number_of_patterns = static_cast<int>(weights.size());
 
-	propagator = std::vector(NumberOfNeighbors, std::vector<std::vector<int>>(T));
+	propagator = std::vector(NumberOfNeighbors, std::vector<std::vector<int>>(number_of_patterns));
 
-	InitCellInfo(T);
+	InitCellInfo(number_of_patterns);
 
 	std::vector<int> list;
-	list.reserve(T);
+	list.reserve(number_of_patterns);
 
 	constexpr CubeHexCoordinates center_hex = { 0, 0 };
 	std::vector<CubeHexCoordinates> neighbors(GetPatternSize(n));
@@ -170,17 +170,16 @@ OverlappingModel::OverlappingModel(
 			}
 		}
 
-		for (int t = 0; t < T; t++)
+		for (int t = 0; t < number_of_patterns; t++)
 		{
 			list.clear();
-			for (int t2 = 0; t2 < T; t2++)
+			for (int t2 = 0; t2 < number_of_patterns; t2++)
 			{
 				if (Agrees(patterns[t], patterns[t2], Indexes, RotatedIndexes, TranslatedIndexes))
 				{
 					list.push_back(t2);
 				}
 			}
-	//		cellInfos[t].propagator[d] = list;
 			propagator[d][t] = list;
 		}
 	}

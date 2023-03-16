@@ -97,10 +97,9 @@ int main()
 
 
 	// Flower
-	/*
 	int W = 15;
 	int H = 24;
-	std::vector<int> bitmap = {
+	std::vector<int> flower = {
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,
@@ -123,15 +122,10 @@ int main()
 		 0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,
 		 0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,
-		3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,
-		 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
 	};
-	*/
 
 	// Damier
 	/**/
-	int W = 9;
-	int H = 9;
 	std::vector<int> bitmap2 = {
 		1,1,1,1,1,1,1,1,1,
 		 1,2,1,2,1,2,1,2,1,
@@ -172,8 +166,8 @@ int main()
 	std::vector<int> bitmap5 = {
 		0,0,0,0,0,0,0,0,0,0,
 		 0,1,1,1,1,1,1,1,0,0,
-		0,1,1,1,1,2,3,5,1,0,
-		 1,3,2,1,1,2,3,5,1,0,
+		0,1,1,1,2,2,3,5,1,0,
+		 1,3,2,2,2,2,3,5,1,0,
 		1,5,3,2,1,1,2,3,5,1,
 		 1,5,3,2,1,2,3,5,1,0,
 		0,1,5,3,2,2,3,5,1,0,
@@ -182,26 +176,28 @@ int main()
 		 0,0,1,1,1,1,1,0,0,0
 	};
 
+
+	print_debug(flower, 15, 22);
 	
 	
 	PerformanceMeasurement p;
 
 	std::vector<std::vector<int>> maps;
-	maps.push_back(bitmap5);
+	maps.push_back(flower);
 
-	const std::vector<MapSize> model_sizes = { {10,10} };
+	const std::vector<MapSize> model_sizes = { {15,22} };
 
 	const int symmetry = 1;
 	const int N = 2;
 
-	const MapSize output_size = { 30, 30 };
+	const MapSize output_size = { 20, 20 };
 
 	OverlappingModel model = OverlappingModel(maps, model_sizes, symmetry, N, output_size);
 
 	std::vector<int> output_datas;
 	bool done = false;
 
-	for (int k = 0; k < 100; k++)
+	for (int k = 0; k < 1000; k++)
 	{
 		if (model.Run(-1))
 		{
@@ -213,35 +209,7 @@ int main()
 	}
 
 	if (done) {
-		for (int i = output_size.height - 1; i >= 0; --i)
-		{
-			if (i % 2 == 0) std::cout << " ";
-			for (int j = output_size.width - 1; j >= 0; --j)
-			{
-				switch (output_datas[i * output_size.width + j])
-				{
-				case 0:
-					print_white(output_datas[i * output_size.width + j]);
-					break;
-				case 1:
-					print_blue(output_datas[i * output_size.width + j]);
-					break;
-				case 2:
-					print_red(output_datas[i * output_size.width + j]);
-					break;
-				case 3:
-					print_green(output_datas[i * output_size.width + j]);
-					break;
-				case 5:
-					print_pink(output_datas[i * output_size.width + j]);
-					break;
-				case 6:
-					print_other(output_datas[i * output_size.width + j]);
-					break;
-				}
-			}
-			std::cout << '\n';
-		}
+		print_debug(output_datas, output_size.width, output_size.height);
 	}
 }
 

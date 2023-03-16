@@ -15,7 +15,7 @@ struct CellInfo
 	std::vector<std::vector<int>> propagator;
 
 	// D : number of nei : 6
-	// T : Number of patterns
+	// number_of_patterns : Number of patterns
 	// l : id pattern compatible
 
 	int observed;
@@ -59,7 +59,7 @@ class Model
 {
 public:
 
-	Model(int n, const MapSize& output_size): n(n), output_size(output_size) {};
+	Model(int n, const MapSize& output_size): output_size(output_size), n(n) {};
 
 	virtual ~Model() = default;
 
@@ -91,10 +91,9 @@ protected:
 
 	std::vector<std::vector<std::vector<int>>> propagator;
 
-	// rename outputWidth and outputHeight
 	MapSize output_size;
 
-	int T = 0;
+	int number_of_patterns;
 
 	std::vector<double> weights;
 
